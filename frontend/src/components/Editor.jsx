@@ -47,6 +47,15 @@ const Editor = () => {
   useEffect(() => {
     const socketServer = io(process.env.REACT_APP_API_URL || "http://localhost:9000");
     setSocket(socketServer);
+  
+    socketServer.on("connect", () => {
+      console.log("Connected to socket server");
+    });
+  
+    socketServer.on("disconnect", () => {
+      console.log("Disconnected from socket server");
+    });
+  
     return () => {
       socketServer.disconnect();
     };
@@ -73,10 +82,10 @@ const Editor = () => {
     const handelChange = (delta) => {
       quill.updateContents(delta);
     };
-    socket && socket.on("recieve-changes", handelChange);
+    socket && socket.on("receive-changes", handelChange);
 
     return () => {
-      socket && socket.off("recieve-changes", handelChange);
+      socket && socket.off("receive-changes", handelChange);
     };
   }, [quill, socket]);
 
